@@ -136,7 +136,7 @@ interface AuditorState {
 /* ------------------------------------------------------------------ */
 /*  Store                                                              */
 /* ------------------------------------------------------------------ */
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
 
 /** Helper: create an SSE EventSource and wire up state updates */
 function createSSEStream(
