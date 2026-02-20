@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    # Alternatively, users can pull the prebuilt image:
+    # image: ghcr.io/stacked-nerds/github-auditor-backend:latest
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Default API URL for local docker-compose environment
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    # Alternatively, users can pull the prebuilt image:
+    # image: ghcr.io/stacked-nerds/github-auditor-frontend:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
