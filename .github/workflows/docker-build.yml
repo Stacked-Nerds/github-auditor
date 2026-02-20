@@ -1,0 +1,81 @@
+name: Build and Publish Docker Images
+
+on:
+  push:
+    branches: [ "main" ]
+    # You can also trigger on tags, e.g., v1.0.0
+    # tags: [ 'v*.*.*' ]
+
+env:
+  REGISTRY: ghcr.io
+  # Replace Stacked-Nerds with github.repository_owner if you want it to be dynamic, 
+  # but since we know the destination we can hardcode the prefix or just use the github context.
+  BACKEND_IMAGE_NAME: ghcr.io/stacked-nerds/github-auditor-backend
+  FRONTEND_IMAGE_NAME: ghcr.io/stacked-nerds/github-auditor-frontend
+
+jobs:
+  build-and-push-images:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Backend
+      - name: Extract metadata for Backend
+        id: meta-backend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BACKEND_IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha
+            type=ref,event=tag
+
+      # Extract metadata (tags, labels) for Frontend
+      - name: Extract metadata for Frontend
+        id: meta-frontend
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.FRONTEND_IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha
+            type=ref,event=tag
+
+      # Build and push Backend Image
+      - name: Build and push Backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ steps.meta-backend.outputs.tags }}
+          labels: ${{ steps.meta-backend.outputs.labels }}
+          cache-from: type=gha,scope=backend
+          cache-to: type=gha,mode=max,scope=backend
+
+      # Build and push Frontend Image
+      - name: Build and push Frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: true
+          tags: ${{ steps.meta-frontend.outputs.tags }}
+          labels: ${{ steps.meta-frontend.outputs.labels }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://localhost:8000
+          cache-from: type=gha,scope=frontend
+          cache-to: type=gha,mode=max,scope=frontend

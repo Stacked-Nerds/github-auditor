@@ -3,7 +3,7 @@
 **GitHub Auditor** is a powerful, open-source tool designed to audit, visualize, and improve the security posture of GitHub organizations. It streams data in real-time to handle large organizations without hitting rate limits, providing actionable insights into repositories, branches, users, and teams.
 
 <p align="center">
-  <img src="frontend/public/logo-full.png" alt="GitHub Auditor Dashboard" width="500" />
+  <img src="frontend/public/logo-full.png" alt="GitHub Auditor Dashboard" width="200" />
 </p>
 
 ## 🚀 Key Features
@@ -61,6 +61,23 @@ npm run dev
 ```
 
 Visit `http://localhost:3000` to start auditing!
+
+### 🐳 Running with Docker
+
+You can easily run the entire stack using Docker Compose:
+
+```bash
+# Start both frontend and backend
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the stack
+docker-compose down
+```
+
+The app will be available at `http://localhost:3000` and the backend at `http://localhost:8000`.
 
 ## 🔒 Security
 
