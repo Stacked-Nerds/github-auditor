@@ -2,7 +2,9 @@
 
 **GitHub Auditor** is a powerful, open-source tool designed to audit, visualize, and improve the security posture of GitHub organizations. It streams data in real-time to handle large organizations without hitting rate limits, providing actionable insights into repositories, branches, users, and teams.
 
-![GitHub Auditor Dashboard](frontend/public/logo-full.png)
+<p align="center">
+  <img src="frontend/public/logo-full.png" alt="GitHub Auditor Dashboard" width="500" />
+</p>
 
 ## 🚀 Key Features
 
